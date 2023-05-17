@@ -24,7 +24,6 @@ public class Lab {
         Thread thread1 = new Thread(MatrixFunctions.firstThread(latch, barrier));
         Thread thread2 = new Thread(MatrixFunctions.secondThread(latch, barrier));
 
-        int test;
         thread1.start();
         thread2.start();
 
