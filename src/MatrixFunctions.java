@@ -12,7 +12,7 @@ public class MatrixFunctions {
             Thread.currentThread().setName("First thread");
             System.out.println(Thread.currentThread().getName() + " was started");
             try {
-                barrier.await(); // Wait for both equations to reach the barrier
+                barrier.await();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -28,13 +28,13 @@ public class MatrixFunctions {
             double[][] right = Calculation.multiply(D, maxB);
             double[][] Y = Calculation.sum(left, right);
 
-            writeToFile("Lab2_Y",Y);
+            writeToFile("Lab3_Y",Y);
             writeToConsole("Y", Y);
 
             long endTime = System.currentTimeMillis();
             String text_1 = Thread.currentThread().getName() + " was finished in " + (endTime - startTime) + " ms";
             System.out.println(text_1);
-            writeTimeToFile("Lab2_Time", text_1);
+            writeTimeToFile("Lab3_Time", text_1);
             latch.countDown();
         };
     }
@@ -59,13 +59,13 @@ public class MatrixFunctions {
             double[][] right = Calculation.multiply(MZ, MT);
             double[][] MA = Calculation.subtract(left, right);
 
-            writeToFile("Lab2_MA",MA);
+            writeToFile("Lab3_MA",MA);
             writeToConsole("MA", MA);
 
             long endTime = System.currentTimeMillis();
             String text_2 = Thread.currentThread().getName() + " was finished in " + (endTime - startTime) + " ms";
             System.out.println(text_2);
-            writeTimeToFile("Lab2_Time", text_2);
+            writeTimeToFile("Lab3_Time", text_2);
 
             latch.countDown();
         };
@@ -74,10 +74,12 @@ public class MatrixFunctions {
     private static void writeToFile(String fileName, double[][] vector) {
         String file = "./result/" + fileName + ".txt";
         try (PrintWriter writer = new PrintWriter(new FileWriter(file, true))) {
-            for (double val : vector[0]) {
-                writer.print(val + " ");
+            for (double[] doubles : vector) {
+                for (double aDouble : doubles) {
+                    writer.print(aDouble + " ");
+                }
+                writer.println();
             }
-            writer.println();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -91,9 +93,13 @@ public class MatrixFunctions {
         }
     }
 
-    public synchronized static void writeToConsole(String name, double[][] vector) {
+    public synchronized static void writeToConsole(String name, double[][] matrix) {
         System.out.println(name + ":");
-        for (double val : vector[0]) System.out.print(val + " ");
+        for (double[] doubles : matrix) {
+            for (double aDouble : doubles) {
+                System.out.print(aDouble + " ");
+            }
             System.out.println();
+        }
     }
 }

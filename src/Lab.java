@@ -1,6 +1,8 @@
 import DataInfo.DataReader;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Lab {
 
@@ -21,11 +23,12 @@ public class Lab {
         CountDownLatch latch = new CountDownLatch(2);
         CyclicBarrier barrier = new CyclicBarrier(2);
 
-        Thread thread1 = new Thread(MatrixFunctions.firstThread(latch, barrier));
-        Thread thread2 = new Thread(MatrixFunctions.secondThread(latch, barrier));
+        ExecutorService executorService = Executors.newFixedThreadPool(2);
 
-        thread1.start();
-        thread2.start();
+        executorService.execute(MatrixFunctions.firstThread(latch, barrier));
+        executorService.execute(MatrixFunctions.secondThread(latch, barrier));
+
+        executorService.shutdown();
 
         try {
             latch.await();
@@ -37,7 +40,7 @@ public class Lab {
         System.out.println("Program finished");
         String text = "Total time: " + (endTime - startTime) + " ms";
         System.out.println(text);
-        MatrixFunctions.writeTimeToFile("Lab2_Time", text);
+        MatrixFunctions.writeTimeToFile("Lab3_Time", text);
     }
 }
 
