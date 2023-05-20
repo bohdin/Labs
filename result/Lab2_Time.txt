@@ -1,9 +1,12 @@
 First thread was finished in 31 ms
-Second thread was finished in 47 ms
-Total time: 157 ms
-First thread was finished in 16 ms
-Second thread was finished in 16 ms
-Total time: 94 ms
-First thread was finished in 16 ms
-Second thread was finished in 16 ms
-Total time: 125 ms
+Second thread was finished in 109 ms
+Total time: 266 ms
+First thread was finished in 0 ms
+Second thread was finished in 116 ms
+Total time: 258 ms
+First thread was finished in 10 ms
+Second thread was finished in 139 ms
+Total time: 268 ms
+First thread was finished in 20 ms
+Second thread was finished in 119 ms
+Total time: 253 ms
