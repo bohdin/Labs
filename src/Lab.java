@@ -1,20 +1,19 @@
 import DataInfo.DataReader;
-import java.io.FileNotFoundException;
-import java.util.Scanner;
 import java.util.concurrent.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import Calculation.MatrixMultiplicationTask;
 
 public class Lab {
 
-    public static double[][]  MT, MZ, MA;
+    public static double[][]  MT, MZ, MA, result;
     public static double[][]  B, D, Y;
     public static Lock lock = new ReentrantLock();
+    public static int n = 100;
 
     public static void main(String[] args) {
         long startTime = System.currentTimeMillis();
         DataReader dataReader = new DataReader();
-        int n = 100;
 
         MT = dataReader.readMatrix("Data/MT.txt", n, n);
         MZ = dataReader.readMatrix("Data/MZ.txt", n, n);
@@ -25,18 +24,23 @@ public class Lab {
         CountDownLatch latch = new CountDownLatch(2);
         CyclicBarrier barrier = new CyclicBarrier(2);
 
-        ExecutorService executorService = Executors.newFixedThreadPool(2);
+        ForkJoinPool pool = new ForkJoinPool(2);
 
-        Future<double[][]> equation1 = executorService.submit(MatrixFunctions.firstThread(latch, barrier));
-        Future<double[][]> equation2 = executorService.submit(MatrixFunctions.secondThread(latch, barrier));
+        MatrixMultiplicationTask task = new MatrixMultiplicationTask(MZ, MT,0, 99, 0, 99);
+        result = pool.invoke(task);
+        ForkJoinTask<double[][]> equation1 = pool.submit(MatrixFunctions.firstThread(latch, barrier));
+        ForkJoinTask<double[][]> equation2 = pool.submit(MatrixFunctions.secondThread(latch, barrier));
 
-        executorService.shutdown();
+        pool.shutdown();
+
 
         try {
             latch.await();
             Y = equation1.get();
             MA = equation2.get();
-        } catch (InterruptedException | ExecutionException e) {
+        }catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -44,7 +48,7 @@ public class Lab {
         System.out.println("Program finished");
         String text = "Total time: " + (endTime - startTime) + " ms";
         System.out.println(text);
-        MatrixFunctions.writeTimeToFile("Lab4_Time", text);
+        MatrixFunctions.writeTimeToFile("Lab5_Time", text);
     }
 }
 
